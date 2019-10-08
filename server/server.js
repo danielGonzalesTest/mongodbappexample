@@ -1,29 +1,20 @@
+require('./config/config');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-require('./config/config');
+const mongoose = require('mongoose');
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json()) 
+// parse application /x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
+app.use(require('./routes/usuario'));
 
-app.get('/usuario', function (req, res) {
-    res.json('get usuario');
+mongoose.connect('mongodb://localhost:27017/connection1', (err, res) => {
+    if (err) throw err;
+    console.log('base de datos en linea');
 });
 
-app.post('/usuario', function (req, res) {
-    let body = req.body;
-    res.json({ persona: body });
-});
-
-app.put('/usuario', function (req, res) {
-    let id = req.params.id;
-
-    res.json({ id });
-});
-
-app.delete('/usuario', function (req, res) {
-    res.json('delete usuario');
-});
 
 app.listen(process.env.PORT, () => {
     console.log('escuchando puerto', process.env.PORT)
